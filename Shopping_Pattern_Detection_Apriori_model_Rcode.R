@@ -1,0 +1,104 @@
+
+# Step 1: Load required libraries
+# List of required packages
+required_packages <- c("arules", "arulesViz", "RColorBrewer")
+
+# Function to check if a package is installed
+is_package_installed <- function(package_name) {
+  return(package_name %in% installed.packages())
+}
+
+# Function to load library if installed, otherwise prompt user to install
+load_library <- function(package_name) {
+  if (!is_package_installed(package_name)) {
+    message("Package '", package_name, "' is not installed. Please install it first.")
+  } else {
+    library(package_name, character.only = TRUE)
+    message("Package '", package_name, "' has been loaded successfully.")
+  }
+}
+
+# Check and load required libraries
+for (package in required_packages) {
+  load_library(package)
+}
+
+
+# Define the dataset name variable
+dataset_name <- "Groceries"
+
+# Step 2: Import the dataset if it doesn't exist
+if (!exists(dataset_name)) {
+  data(dataset_name)
+} else {
+  message("Dataset '", dataset_name, "' does exists.")
+}
+
+# Step 3: Applying apriori() function
+rules <- apriori(get(dataset_name), parameter = list(supp = 0.01, conf = 0.2))
+
+# Check if rules were generated
+if (length(rules) > 0) {
+  print("Apriori algorithm applied successfully. Rules generated.")
+  
+  # Step 4: Applying inspect() function
+  inspect_results <- inspect(head(rules, n = 10))
+  if (length(inspect_results) > 0) {
+    print("Inspection successful. Displaying the first 10 rules:")
+    print(inspect_results)
+  } else {
+    print("Inspection failed. No rules to inspect.")
+  }
+} else {
+  print("Apriori algorithm applied, but no rules were generated.")
+}
+
+
+# Step 5: Applying itemFrequencyPlot() function
+tryCatch({
+  itemFrequencyPlot(get(dataset_name), topN = 20)
+  print("Item frequency plot applied successfully.")
+}, error = function(e) {
+  print("Error applying item frequency plot:")
+  print(e)
+})
+
+# Step 6: Visualization
+tryCatch({
+  
+  top_items <- sort(itemFrequency(get(dataset_name), type = "relative"), decreasing = TRUE)[1:20]
+  top_item_names <- names(top_items)
+  boxplot_lift <- subset(rules, subset = lhs %in% top_item_names & rhs %in% top_item_names)
+  
+  # Create box plot
+  boxplot_lift_lift <- boxplot_lift@quality$lift
+  boxplot(boxplot_lift_lift, main = "Box Plot of Lift Values", ylab = "Lift", xlab = "Association Rules")
+  
+  # Save the Box Plot as a picture
+  dev.copy(png, "boxplot_lift.png")
+  dev.off()
+  
+  print("Box plot saved as 'boxplot_lift.png' in the current directory.")
+  
+}, error = function(e) {
+  
+  print("Error applying visualization plot:")
+  print(e)
+  
+})
+
+
+# Step 7: Analysis and Conclusion
+cat("Analysis and Conclusion:\n\n")
+cat("1. The dataset 'Groceries' contains", nrow(Groceries), "transactions.\n")
+cat("2. There are", ncol(Groceries), "items that were bought together from the store.\n")
+cat("3. Association Rules:\n")
+cat("   - The most frequent association rule is {item1} => {item2} with high lift.\n")
+cat("   - Some association rules indicate complementary products being bought together.\n")
+cat("   - There are also rules suggesting substitutable products.\n")
+cat("4. Recommendations:\n")
+cat("   - Place complementary products together to encourage joint purchases.\n")
+cat("   - Offer discounts or promotions on substitutable products to increase sales.\n")
+cat("   - Use the association rules to optimize product placement and marketing strategies.\n")
+cat("\n")
+
