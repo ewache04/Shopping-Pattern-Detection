@@ -68,10 +68,5 @@ The analysis concludes with actionable recommendations based on association rule
 
 **GitHub Repository:**  
 The full code, outputs, and detailed documentation for this project are available at:  
-[Association Rule Mining - GitHub Repository](https://github.com/ewache04/Insurance-Prediction-Models)  
+[Association Rule Mining - GitHub Repository](https://github.com/ewache04/Shopping-Pattern-Detection)  
 
-**Contact Information:**  
-**Jeremiah Ochepo**  
-**Email:** [jochepo4growth@gmail.com](mailto:jochepo4growth@gmail.com)  
-
-This project showcases my proficiency in data analysis, visualization, and actionable insight generation, directly aligning with my ability to develop scalable solutions for real-world challenges.
