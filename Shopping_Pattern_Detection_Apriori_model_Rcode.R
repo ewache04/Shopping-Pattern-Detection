@@ -1,4 +1,3 @@
-
 # Step 1: Load required libraries
 # List of required packages
 required_packages <- c("arules", "arulesViz", "RColorBrewer")
@@ -11,7 +10,9 @@ is_package_installed <- function(package_name) {
 # Function to load library if installed, otherwise prompt user to install
 load_library <- function(package_name) {
   if (!is_package_installed(package_name)) {
-    message("Package '", package_name, "' is not installed. Please install it first.")
+    install.packages(package_name)
+    library(package_name, character.only = TRUE)
+    message("Package '", package_name, "' has been installed and loaded successfully.")
   } else {
     library(package_name, character.only = TRUE)
     message("Package '", package_name, "' has been loaded successfully.")
@@ -23,82 +24,61 @@ for (package in required_packages) {
   load_library(package)
 }
 
-
+# Step 2: Load the Groceries dataset
 # Define the dataset name variable
 dataset_name <- "Groceries"
 
-# Step 2: Import the dataset if it doesn't exist
 if (!exists(dataset_name)) {
-  data(dataset_name)
+  data(Groceries)  # Load the Groceries dataset
+  message("Dataset 'Groceries' has been loaded.")
 } else {
-  message("Dataset '", dataset_name, "' does exists.")
+  message("Dataset '", dataset_name, "' already exists.")
 }
 
-# Step 3: Applying apriori() function
-rules <- apriori(get(dataset_name), parameter = list(supp = 0.01, conf = 0.2))
+# Step 3: Apply the Apriori algorithm
+rules <- apriori(Groceries, parameter = list(supp = 0.01, conf = 0.2))
 
 # Check if rules were generated
 if (length(rules) > 0) {
   print("Apriori algorithm applied successfully. Rules generated.")
-  
-  # Step 4: Applying inspect() function
+
+  # Step 4: Inspect the first 10 rules
   inspect_results <- inspect(head(rules, n = 10))
-  if (length(inspect_results) > 0) {
-    print("Inspection successful. Displaying the first 10 rules:")
-    print(inspect_results)
-  } else {
-    print("Inspection failed. No rules to inspect.")
-  }
+  print("First 10 rules inspected:")
+  print(inspect_results)
 } else {
   print("Apriori algorithm applied, but no rules were generated.")
 }
 
-
-# Step 5: Applying itemFrequencyPlot() function
+# Step 5: Generate an item frequency plot
 tryCatch({
-  itemFrequencyPlot(get(dataset_name), topN = 20)
-  print("Item frequency plot applied successfully.")
+  itemFrequencyPlot(Groceries, topN = 20, col = brewer.pal(8, "Pastel2"), main = "Top 20 Items by Frequency")
+  print("Item frequency plot generated successfully.")
 }, error = function(e) {
-  print("Error applying item frequency plot:")
+  print("Error generating item frequency plot:")
   print(e)
 })
 
-# Step 6: Visualization
+# Step 6: Create a box plot of lift values for rules
 tryCatch({
-  
-  top_items <- sort(itemFrequency(get(dataset_name), type = "relative"), decreasing = TRUE)[1:20]
-  top_item_names <- names(top_items)
-  boxplot_lift <- subset(rules, subset = lhs %in% top_item_names & rhs %in% top_item_names)
-  
-  # Create box plot
-  boxplot_lift_lift <- boxplot_lift@quality$lift
-  boxplot(boxplot_lift_lift, main = "Box Plot of Lift Values", ylab = "Lift", xlab = "Association Rules")
-  
-  # Save the Box Plot as a picture
+  lift_values <- quality(rules)$lift
+  boxplot(lift_values, main = "Box Plot of Lift Values", ylab = "Lift", xlab = "Rules")
+
+  # Save the box plot
   dev.copy(png, "boxplot_lift.png")
   dev.off()
-  
-  print("Box plot saved as 'boxplot_lift.png' in the current directory.")
-  
+  print("Box plot saved as 'boxplot_lift.png'.")
 }, error = function(e) {
-  
-  print("Error applying visualization plot:")
+  print("Error creating box plot:")
   print(e)
-  
 })
 
-
-# Step 7: Analysis and Conclusion
-cat("Analysis and Conclusion:\n\n")
-cat("1. The dataset 'Groceries' contains", nrow(Groceries), "transactions.\n")
-cat("2. There are", ncol(Groceries), "items that were bought together from the store.\n")
-cat("3. Association Rules:\n")
-cat("   - The most frequent association rule is {item1} => {item2} with high lift.\n")
-cat("   - Some association rules indicate complementary products being bought together.\n")
-cat("   - There are also rules suggesting substitutable products.\n")
+# Step 7: Analysis and conclusion
+cat("\nAnalysis and Conclusion:\n")
+cat("1. The 'Groceries' dataset contains", length(Groceries), "transactions.\n")
+cat("2. Generated", length(rules), "association rules.\n")
+cat("3. Frequent items and associations indicate complementary product pairings, useful for product placement and promotions.\n")
 cat("4. Recommendations:\n")
-cat("   - Place complementary products together to encourage joint purchases.\n")
-cat("   - Offer discounts or promotions on substitutable products to increase sales.\n")
-cat("   - Use the association rules to optimize product placement and marketing strategies.\n")
-cat("\n")
-
+cat("   - Group complementary products together in stores.\n")
+cat("   - Offer discounts on products frequently bought together.\n")
+cat("   - Use the insights to optimize marketing strategies.\n")
