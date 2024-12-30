@@ -54,7 +54,7 @@ The analysis concludes with actionable recommendations based on association rule
   - `arules` for association rule mining.  
   - `arulesViz` for visualizations.  
   - `RColorBrewer` for enhancing visuals.  
-- **Algorithm:** Apriori, for discovering frequent itemsets and association rules.  
+- **Algorithm:** Apriori, for discovering frequent items and association rules.  
 
 ---
 
