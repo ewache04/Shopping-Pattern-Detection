@@ -1,7 +1,3 @@
-Here’s an updated and detailed version of the `README.md` file based on your project's output:
-
----
-
 # Groceries Market Basket Analysis Using Association Rules
 
 This project applies market basket analysis techniques to the **Groceries dataset** to uncover associations between items frequently purchased together. Using the Apriori algorithm, association rules were generated and analyzed to provide actionable insights for optimizing product placement, promotions, and marketing strategies.
@@ -41,12 +37,7 @@ This project applies market basket analysis techniques to the **Groceries datase
 
 ### Association Rules
 The following are examples of the association rules generated:
-| Rule                       | Support   | Confidence | Lift    |
-|----------------------------|-----------|------------|---------|
-| {} => {whole milk}         | 25.55%    | 25.55%     | 1.00    |
-| {onions} => {other vegetables} | 1.42% | 45.90%     | 2.37    |
-| {berries} => {yogurt}      | 1.05%     | 31.80%     | 2.28    |
-
+![Item Frequency Plot](screenshots/association_rules.png)
 ### Frequent Items
 - The **item frequency plot** visualizes the top 20 items by purchase frequency, emphasizing staples like "whole milk," "other vegetables," and "yogurt."
 
@@ -130,8 +121,6 @@ This project is open-source and available under the [MIT License](LICENSE).
 
 **Author**: Jeremiah Ochepo  
 **Email**: jochepo4growth@gmail.com  
-**GitHub**: [Jeremiah Ochepo](https://github.com/ewache04)
+**GitHub**: [Jeremiah Ochepo](https://github.com/ewache04/Shopping-Pattern-Detection)
 
---- 
-
-Feel free to use or contribute to this project! If you encounter any issues or have suggestions for improvements, open an issue on the GitHub repository.
+---
